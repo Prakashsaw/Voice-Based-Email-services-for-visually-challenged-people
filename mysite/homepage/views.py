@@ -10,8 +10,9 @@ import speech_recognition as sr
 from . import forms
 from .models import Details
 from .models import Compose
-import imaplib,email
 
+import imaplib
+import email
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -30,10 +31,12 @@ addr = ""
 item =""
 subject = ""
 body = ""
+
 s = smtplib.SMTP('smtp.gmail.com', 587)
 s.starttls()
 imap_url = 'imap.gmail.com'
 conn = imaplib.IMAP4_SSL(imap_url)
+
 attachment_dir = 'D:/All_Project_Folder/Mini project G-21/Virtual-Assistance-for-The-Blind/mysite'
 
 # def login_view(request):
@@ -168,10 +171,13 @@ def login_view(request):
         passwrd = convert_special_char(passwrd)
         print(passwrd)
 
-        imap_url = 'imap.gmail.com'
+        #imap_url = 'imap.gmail.com'
         #passwrd = ''
         #addr = ''
-        conn = imaplib.IMAP4_SSL(imap_url)
+        #conn = imaplib.IMAP4_SSL(imap_url)
+        print('\n')
+        print(addr)
+        print(passwrd)
         try:
             conn.login(addr, passwrd)
             s.login(addr, passwrd)
@@ -264,7 +270,7 @@ def options_view(request):
             texttospeech("To compose an email say compose. To open Inbox folder say Inbox. To open Sent folder say Sent. To open Trash folder say Trash. To Logout say Logout. Do you want me to repeat?", file + i)
             i = i + str(1)
             say = speechtotext(3)
-            if say == 'No' or say == 'no':
+            if say == 'yes' or say == 'Yes' or say == 'yash' or say == 'Yash' or say == 'yeah' or say == 'Yeah':
                 flag = False
         texttospeech("Enter your desired action", file + i)
         i = i + str(1)
@@ -312,7 +318,7 @@ def compose_view(request):
                     texttospeech("You meant " + to + " say yes to confirm or no to enter again", file + i)
                     i = i + str(1)
                     say = speechtotext(5)
-                    if say == 'yes' or say == 'Yes':
+                    if say == 'yes' or say == 'Yes' or say == 'yash' or say == 'Yash' or say == 'yeah' or say == 'Yeah':
                         toaddr.append(to)
                         flag = False
                 else:
@@ -321,7 +327,7 @@ def compose_view(request):
             texttospeech("Do you want to enter more recipients ?  Say yes or no.", file + i)
             i = i + str(1)
             say1 = speechtotext(3)
-            if say1 == 'No' or say1 == 'no':
+            if say1 == 'yes' or say1 == 'Yes' or say1 == 'yash' or say1 == 'Yash' or say1 == 'yeah' or say1 == 'Yeah':
                 flag1 = False
             flag = True
 
@@ -369,7 +375,7 @@ def compose_view(request):
             i = i + str(1)
             say = speechtotext(2)
             say = say.lower()
-            if say == 'yes':
+            if say == 'yes' or say == 'yas' or say == 'yash' or say == 'yeah':
                 texttospeech("Enter filename.", file + i)
                 i = i + str(1)
                 filename = speechtotext(5)
@@ -508,7 +514,7 @@ def frwd_mail(item, message):
                 i = i + str(1)
                 yn = speechtotext(3)
                 yn = yn.lower()
-                if yn == 'yes':
+                if yn == 'yes' or yn == 'yash' or yn == 'yeah':
                     to = to.strip()
                     to = to.replace(' ', '')
                     to = to.lower()
@@ -536,7 +542,7 @@ def frwd_mail(item, message):
             i = i + str(1)
             act = speechtotext(3)
             act = act.lower()
-            if act != 'yes':
+            if act != 'yes' or act != 'yash':
                 flag = False
 
 def read_mails(mail_list,folder):
@@ -575,7 +581,7 @@ def read_mails(mail_list,folder):
             i = i + str(1)
             say = speechtotext(2)
             say = say.lower()
-            if say == 'yes':
+            if say == 'yes' or say == 'yash' or say == 'yeah':
                 flag1 = False
         n = int(n)
         msgid = to_read_list[n - 1]
@@ -621,7 +627,7 @@ def read_mails(mail_list,folder):
             ans = speechtotext(3)
             ans = ans.lower()
             print(ans)
-            if ans == "yes":
+            if ans == "yes" or ans == 'yash':
                 frwd_mail(Msg_id, message)
 
 
@@ -631,7 +637,7 @@ def read_mails(mail_list,folder):
             ans = speechtotext(3)
             ans = ans.lower()
             print(ans)
-            if ans == "yes":
+            if ans == "yes" or ans == 'yash':
                 try:
                     conn.store(data, '+X-GM-LABELS', '\\Trash')
                     conn.expunge()
@@ -648,7 +654,7 @@ def read_mails(mail_list,folder):
             ans = speechtotext(3)
             ans = ans.lower()
             print(ans)
-            if ans == "yes":
+            if ans == "yes" or ans == 'yash':
                 try:
                     conn.store(data, '+FLAGS', '\\Deleted')
                     conn.expunge()
@@ -720,7 +726,7 @@ def inbox_view(request):
                     i = i + str(1)
                     yn = speechtotext(5)
                     yn = yn.lower()
-                    if yn == 'yes':
+                    if yn == 'yes' or yn == 'yash':
                         break
                 emailid = emailid.strip()
                 emailid = emailid.replace(' ', '')
@@ -749,7 +755,7 @@ def inbox_view(request):
             i = i + str(1)
             ans = speechtotext(3)
             ans = ans.lower()
-            if ans == 'yes':
+            if ans == 'yes' or ans == 'yash':
                 flag = True
                 texttospeech("Enter your desired action. Say unread, search, back or logout. ", file + i)
                 i = i + str(1)
@@ -789,7 +795,7 @@ def sent_view(request):
                     i = i + str(1)
                     yn = speechtotext(5)
                     yn = yn.lower()
-                    if yn == 'yes':
+                    if yn == 'yes' or yn == 'yash':
                         break
                 emailid = emailid.strip()
                 emailid = emailid.replace(' ', '')
@@ -818,7 +824,7 @@ def sent_view(request):
             i = i + str(1)
             ans = speechtotext(3)
             ans = ans.lower()
-            if ans == 'yes':
+            if ans == 'yes' or ans == 'yash' or ans == 'yas':
                 flag = True
                 texttospeech("Enter your desired action. Say search, back or logout. ", file + i)
                 i = i + str(1)
@@ -858,7 +864,7 @@ def trash_view(request):
                     i = i + str(1)
                     yn = speechtotext(5)
                     yn = yn.lower()
-                    if yn == 'yes':
+                    if yn == 'yes' or yn == 'yash' or yn == 'yas':
                         break
                 emailid = emailid.strip()
                 emailid = emailid.replace(' ', '')
@@ -890,7 +896,7 @@ def trash_view(request):
             ans = speechtotext(3)
             ans = ans.lower()
             print(ans)
-            if ans == 'yes':
+            if ans == 'yes' or ans == 'yash' or ans == 'yas':
                 flag = True
                 texttospeech("Enter your desired action. Say search, back or logout. ", file + i)
                 i = i + str(1)
