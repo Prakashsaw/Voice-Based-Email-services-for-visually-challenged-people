@@ -1,6 +1,7 @@
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, request
+from django.contrib.auth import login, authenticate, logout
 import gtts
 from playsound import playsound
 import os
@@ -14,6 +15,7 @@ from .models import Compose
 import imaplib
 import email
 import smtplib
+
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -179,8 +181,8 @@ def login_view(request):
         print(addr)
         print(passwrd)
         try:
-            conn.login(addr, passwrd)
-            s.login(addr, passwrd)
+            # conn.login(addr, passwrd)
+            # s.login(addr, passwrd)
             texttospeech("Congratulations. You have logged in successfully. You will now be redirected to the menu page.", file + i)
             i = i + str(1)
             return JsonResponse({'result' : 'success'})
@@ -195,71 +197,6 @@ def login_view(request):
     detail.password = passwrd
     return render(request, 'homepage/login.html', {'detail' : detail}) 
 
-
-# from django.shortcuts import render, redirect
-# from django.http import HttpResponse, request
-# from . import forms
-# from .models import Details
-# from .models import Compose
-# import imaplib,email
-# import gtts
-# import os
-# from playsound import playsound
-
-# import speech_recognition as sr
-# import smtplib
-# from email.mime.multipart import MIMEMultipart
-# from email.mime.text import MIMEText
-# from email.mime.base import MIMEBase
-# from email import encoders
-# from django.http import JsonResponse
-# import re
-
-# file = "good"
-# i="0"
-# passwrd = ""
-# addr = ""
-# item =""
-# subject = ""
-# body = ""
-# s = smtplib.SMTP('smtp.gmail.com', 587)
-# s.starttls()
-# imap_url = 'imap.gmail.com'
-# conn = imaplib.IMAP4_SSL(imap_url)
-# attachment_dir = 'D:/4th-Sem-MCA/Mini project G-21/Virtual-Assistance-for-The-Blind/mysite'
-
-
-# def convert_special_char(text):
-#     temp=text
-#     special_chars = ['attherate','dot','underscore','dollar','hash','star','plus','minus','space','dash']
-#     for character in special_chars:
-#         while(True):
-#             pos=temp.find(character)
-#             if pos == -1:
-#                 break
-#             else :
-#                 if character == 'attherate':
-#                     temp=temp.replace('attherate','@')
-#                 elif character == 'dot':
-#                     temp=temp.replace('dot','.')
-#                 elif character == 'underscore':
-#                     temp=temp.replace('underscore','_')
-#                 elif character == 'dollar':
-#                     temp=temp.replace('dollar','$')
-#                 elif character == 'hash':
-#                     temp=temp.replace('hash','#')
-#                 elif character == 'star':
-#                     temp=temp.replace('star','*')
-#                 elif character == 'plus':
-#                     temp=temp.replace('plus','+')
-#                 elif character == 'minus':
-#                     temp=temp.replace('minus','-')
-#                 elif character == 'space':
-#                     temp = temp.replace('space', '')
-#                 elif character == 'dash':
-#                     temp=temp.replace('dash','-')
-#     return temp
-
 def options_view(request):
     global i, addr, passwrd
     if request.method == 'POST':
@@ -267,7 +204,7 @@ def options_view(request):
         texttospeech("You are logged into your account. What would you like to do ?", file + i)
         i = i + str(1)
         while(flag):
-            texttospeech("To compose an email say compose. To open Inbox folder say Inbox. To open Sent folder say Sent. To open Trash folder say Trash. To Logout say Logout. Do you want me to repeat?", file + i)
+            texttospeech("To compose an email say compose. To open Inbox folder say Inbox. To open Sent folder say Sent. To open Trash folder say Trash. To Logout say Logout. Say yes to continue or no to repeate.", file + i)
             i = i + str(1)
             say = speechtotext(3)
             if say == 'yes' or say == 'Yes' or say == 'yash' or say == 'Yash' or say == 'yeah' or say == 'Yeah':
@@ -305,7 +242,7 @@ def compose_view(request):
         i = i + str(1)
         flag = True
         flag1 = True
-        fromaddr = addr
+        fromaddr = 'prakash1999saw@gmail.com'
         toaddr = list()
         while flag1:
             while flag:
@@ -327,7 +264,7 @@ def compose_view(request):
             texttospeech("Do you want to enter more recipients ?  Say yes or no.", file + i)
             i = i + str(1)
             say1 = speechtotext(3)
-            if say1 == 'yes' or say1 == 'Yes' or say1 == 'yash' or say1 == 'Yash' or say1 == 'yeah' or say1 == 'Yeah':
+            if say1 == 'no' or say1 == 'No' or say1 == 'know' or say1 == 'Know':
                 flag1 = False
             flag = True
 
@@ -416,7 +353,7 @@ def compose_view(request):
                 p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
                 msg.attach(p)
         try:
-            s.sendmail(fromaddr, newtoaddr, msg.as_string())
+            #s.sendmail(fromaddr, newtoaddr, msg.as_string())
             texttospeech("Your email has been sent successfully. You will now be redirected to the menu page.", file + i)
             i = i + str(1)
         except:
